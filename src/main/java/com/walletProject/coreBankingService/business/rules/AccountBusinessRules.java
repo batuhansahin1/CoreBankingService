@@ -1,0 +1,32 @@
+package com.walletProject.coreBankingService.business.rules;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import com.walletProject.coreBankingService.models.entities.Accounts;
+import com.walletProject.coreBankingService.repository.AccountRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class AccountBusinessRules {
+
+	private final AccountRepository accountRepository;
+	
+	public void isExistsByAccountId(UUID accountId) {
+		
+		if(!accountRepository.existsById(accountId)) {
+			throw new RuntimeException("There is no account with that id");
+		}
+	}
+	
+	public void isBalanceSufficeient(UUID accountId,BigDecimal amount) {
+		isExistsByAccountId(accountId);
+		Accounts account= this.accountRepository.findById(accountId);
+	   if(account.getAvailableBalance().compareTo(amount)<0) {
+		 throw new RuntimeException("Balance is not suffiecient for transfer");  
+	   }
+	   account.setAvailableBalance(account.getAvailableBalance().subtract(amount));
+	   account.setBalance(account.getBalance().subtract(amount));
+	}
+}
