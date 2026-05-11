@@ -29,4 +29,10 @@ public class AccountBusinessRules {
 	   account.setAvailableBalance(account.getAvailableBalance().subtract(amount));
 	   account.setBalance(account.getBalance().subtract(amount));
 	}
+public void isIbanExists(String ibanNumber) {
+		
+		if(!accountRepository.existsByIbanNumber(ibanNumber)) {
+			throw new RuntimeException("Bu iban kayıtlı değil");
+		}
+	}
 }

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 
+import com.walletProject.coreBankingService.models.enums.TransactionType;
+import com.walletProject.coreBankingService.models.enums.TransferStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -29,12 +32,12 @@ public class Transactions {
     //transfer serviceden gelecek id dış servis
     private String referanceId;
     //Enum olacak(debit,credit) bu businessta belli olacak 
-	private String type;
+	private TransactionType type;
 	
 	
 	private BigDecimal amount;
 	private String currency;
 	//enum olacak pending,completed failed
-	private String status;
+	private TransferStatus status;
 	private LocalDateTime createdAt;
 }

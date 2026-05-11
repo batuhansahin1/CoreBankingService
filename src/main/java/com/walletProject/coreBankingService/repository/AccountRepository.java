@@ -14,4 +14,7 @@ public interface AccountRepository extends JpaRepository<Accounts, Integer> {
 	public boolean existsById(UUID id );
 	
 	public Accounts findById(UUID id);
+	public Accounts findByIbanNumber(String ibanNumber);
+	public boolean existsByIbanNumber(String ibanNumber);
+
 }
