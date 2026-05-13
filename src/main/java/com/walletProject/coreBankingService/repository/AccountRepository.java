@@ -11,9 +11,9 @@ import com.walletProject.coreBankingService.models.entities.Accounts;
 public interface AccountRepository extends JpaRepository<Accounts, Integer> {
 
 	
-	public boolean existsById(UUID id );
+	public boolean existsById(int id );
 	
-	public Accounts findById(UUID id);
+	public Accounts findById(int id);
 	public Accounts findByIbanNumber(String ibanNumber);
 	public boolean existsByIbanNumber(String ibanNumber);
 

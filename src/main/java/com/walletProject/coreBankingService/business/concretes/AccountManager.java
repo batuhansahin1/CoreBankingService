@@ -74,7 +74,7 @@ public class AccountManager implements AccountService{
 	
 	@Override
 	@Transactional
-	public void withdraw(UUID accountId, CreateTransactionRequest request) {// hesaptan para 
+	public void withdraw(int accountId, CreateTransactionRequest request) {// hesaptan para 
 		//çekme birine para gönderdiğinde de bu çalışır
 	
 		this.accountBusinessRules.isExistsByAccountId(accountId);
@@ -100,7 +100,7 @@ public class AccountManager implements AccountService{
 
 	@Override
 	@Transactional
-	public void deposit(UUID accountId, CreateTransactionRequest request) {
+	public void deposit(int accountId, CreateTransactionRequest request) {
 		this.transactionBusinessRules.isReferenceIdExists(request.getReferenceId());
 		Accounts account=this.accountRepository.findById(accountId);
 		BigDecimal newAvBalance= account.getAvailableBalance().add(request.getAmount());

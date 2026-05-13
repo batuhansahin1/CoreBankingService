@@ -10,5 +10,8 @@ public class CreateAccountRequest {
 	private String currency;
 	
 	private int customerId;
+	private String ibanNumber;
+	private String balance;
+	
 	
 }

@@ -23,7 +23,7 @@ public class AccountsInternalController {
 	private final AccountService accountService;
 	
 	@PostMapping("/{accountId}/withdraw")
-	public ResponseEntity<Void> withdraw(@PathVariable UUID accountId
+	public ResponseEntity<Void> withdraw(@PathVariable int accountId
 			,@RequestBody CreateTransactionRequest request){
 		
 		accountService.withdraw(accountId,request);
@@ -31,7 +31,7 @@ public class AccountsInternalController {
 	}
 	
 	@PostMapping("/{accountId}/deposit")
-	public ResponseEntity<Void> deposit(@PathVariable UUID accountId
+	public ResponseEntity<Void> deposit(@PathVariable int accountId
 			,@RequestBody CreateTransactionRequest request){
 		
 		accountService.deposit(accountId,request);

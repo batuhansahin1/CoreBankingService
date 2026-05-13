@@ -10,9 +10,9 @@ public interface AccountService {
 
 	void add(CreateAccountRequest createAccountRequest);
 
-	void withdraw(UUID accountId, CreateTransactionRequest request);
+	void withdraw(int accountId, CreateTransactionRequest request);
 
-	void deposit(UUID accountId, CreateTransactionRequest request);
+	void deposit(int accountId, CreateTransactionRequest request);
 
 	void processTransfer(TransferCreatedEvent event);
 

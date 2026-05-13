@@ -1,7 +1,7 @@
 package com.walletProject.coreBankingService.models.entities;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class Accounts {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private UUID id;
+	private int id;
 	
 	//default değer
 	private BigDecimal balance;
@@ -39,6 +39,7 @@ public class Accounts {
 	private String accountNumber;
 	
 	private String currency;
+	
 	private LocalDateTime createdAt;
 
 	//optimistic lock sürümü
@@ -48,7 +49,7 @@ public class Accounts {
 	private String status;
 	
 	@ManyToOne
-	@JoinColumn(name = "cuatomer_id")
+	@JoinColumn(name = "customer_id")
 	private Customers customer;
 	@OneToMany(mappedBy = "account")
 	private List<Transactions> transactionList;
