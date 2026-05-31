@@ -8,6 +8,10 @@ import com.walletProject.coreBankingService.models.enums.TransactionType;
 import com.walletProject.coreBankingService.models.enums.TransferStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,6 +28,7 @@ import lombok.Setter;
 public class Transactions {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
     @ManyToOne
@@ -32,6 +37,7 @@ public class Transactions {
     //transfer serviceden gelecek id dış servis
     private String referanceId;
     //Enum olacak(debit,credit) bu businessta belli olacak 
+    @Enumerated(EnumType.STRING)
 	private TransactionType type;
 	
 	

@@ -6,4 +6,10 @@ import com.walletProject.coreBankingService.models.entities.Customers;
 
 public interface CustomerRepository extends JpaRepository<Customers, Integer> {
 
+	boolean existsByTcKimlikNo(String tcKimlik);
+
+	Customers findByTcKimlikNo(String tcKimlik);
+	
+	
+
 }

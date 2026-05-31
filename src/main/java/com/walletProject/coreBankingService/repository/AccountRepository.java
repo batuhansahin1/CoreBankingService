@@ -17,4 +17,10 @@ public interface AccountRepository extends JpaRepository<Accounts, Integer> {
 	public Accounts findByIbanNumber(String ibanNumber);
 	public boolean existsByIbanNumber(String ibanNumber);
 
+	
+
+	public Accounts findByCustomerId(int customerId);
+
+	public boolean existsByCustomerId(int customerId);
+
 }

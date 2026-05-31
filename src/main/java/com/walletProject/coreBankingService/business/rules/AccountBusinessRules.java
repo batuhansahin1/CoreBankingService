@@ -38,4 +38,18 @@ public void isIbanExists(String ibanNumber) {
 			throw new RuntimeException("Bu iban kayıtlı değil");
 		}
 	}
+
+
+
+public void isCustomerExists(int customerId) {
+	if(!this.accountRepository.existsByCustomerId(customerId)) {
+		throw new RuntimeException("There is no account with that customer id");
+	}
+	
+
+}
+
+
+
+ 
 }

@@ -2,6 +2,7 @@ package com.walletProject.coreBankingService.core.utilities.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -46,5 +47,21 @@ public class RabbitMQConfig {
                 .bind(transferCreatedQueue)
                 .to(transferExchange)
                 .with(transferCreatedRoutingKey);
+    }
+    @Bean
+    public Queue userRegisteredQueue() {
+        return new Queue("user.registered.queue", true);
+    }
+
+    @Bean
+    public DirectExchange identityExchange() {
+        return new DirectExchange("identity.exchange");
+    }
+
+    @Bean
+    public Binding userRegisteredBinding(Queue userRegisteredQueue, DirectExchange identityExchange) {
+        return BindingBuilder.bind(userRegisteredQueue)
+                             .to(identityExchange)
+                             .with("user.registered.route");
     }
 }

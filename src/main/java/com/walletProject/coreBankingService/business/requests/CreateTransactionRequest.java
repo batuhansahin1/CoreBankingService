@@ -9,5 +9,6 @@ public class CreateTransactionRequest {
 
 	
 	private BigDecimal amount;
-	private String referenceId;
+	
+	private String referanceId;
 }
