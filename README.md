@@ -70,6 +70,7 @@ The ecosystem enforces a strict, stateless security perimeter to protect financi
 
 * **Spring Security & Stateless JWT Validation:** Distributed endpoints (such as fund transfers) are secured using **Spring Security**. Upon successful authentication, the *Identity Service* issues a cryptographically signed **JSON Web Token (JWT)**. Peripheral services utilize customized Spring Security filter chains to intercept incoming requests, extract the token from the `Authorization: Bearer` header, and validate its signature, expiration, and claims statelessly.
 * **Centralized API Gateway Routing:** External clients never communicate with the core business services directly. The **Spring Cloud API Gateway** acts as the single entry point (Reverse Proxy), ensuring that internal services like the *Core Banking Service* remain hidden within an isolated virtual network while routing authorized traffic seamlessly.
+* **Infrastructure & Service Registry Security (Eureka Server):** To ensure microservices can securely discover one another, the **Eureka Server** is isolated from the external network. Furthermore, to prevent rogue services from registering to the network and manipulating traffic, service registration processes to the Eureka Server are secured using **HTTP Basic Authentication**.
 
 <img width="908" height="261" alt="eureka" src="https://github.com/user-attachments/assets/046814f7-eb7b-4b8f-9fff-0709b4d78c06" />
 
