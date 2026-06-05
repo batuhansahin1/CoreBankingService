@@ -11,9 +11,9 @@ The business logic is strictly isolated into three distinct bounded contexts to 
 
 ### 🔐 1. [Identity Service](https://github.com/batuhansahin1/IdentitiyService)
 Manages user registration, authentication, and JSON Web Token (JWT) generation.
-*(Identity Service ER Diyagramını buraya ekle)*
-![Identity Service ER Diagram](<img width="992" height="904" alt="identityER" src="https://github.com/user-attachments/assets/b162baa2-076f-4d01-a38c-bd92ead3fe41" />
-)
+
+<img width="992" height="904" alt="identityER" src="https://github.com/user-attachments/assets/b162baa2-076f-4d01-a38c-bd92ead3fe41" />
+
 
 ### 🏦 2. [Core Banking Service](https://github.com/batuhansahin1/CoreBankingService)
 Handles core financial operations, account balances, and central database validations. *Intentionally isolated from the external network.*
@@ -22,14 +22,14 @@ Handles core financial operations, account balances, and central database valida
 
 
 ### 💸 3. [Transfer Service](https://github.com/batuhansahin1/TransferService)
-Manages fund transfers, utilizes Redis for high-speed state caching, and initiates distributed transaction workflows.
+Manages fund transfers, and initiates distributed transaction workflows.
 
 <img width="992" height="904" alt="transferER" src="https://github.com/user-attachments/assets/feff7964-07a4-4a87-83c2-8130bc522218" />
 
 
 ---
 
-<img width="908" height="261" alt="eureka" src="https://github.com/user-attachments/assets/4f45c78f-5fe9-4c77-88fc-d293542e3a61" />
+
 
 
 ## 🛠️ Technology Stack
@@ -64,13 +64,20 @@ The system is designed to gracefully handle business rule violations (e.g., insu
 <img width="886" height="210" alt="rabbitMqQueue" src="https://github.com/user-attachments/assets/fa3ed625-edfb-4315-892e-546eb7387ea4" />
 
 
-## 🛡️ Security & API Gateway
-All external client requests hit the **Spring Cloud API Gateway**, which acts as a secure reverse proxy. The Gateway dynamically resolves service instances via the **Eureka Service Registry**, ensuring internal services remain inaccessible from the outside world while smoothly routing authentication and transfer requests.
+## 🛡️ Security, Authentication & JWT Validation
+
+The ecosystem enforces a strict, stateless security perimeter to protect financial data and endpoints:
+
+* **Spring Security & Stateless JWT Validation:** Distributed endpoints (such as fund transfers) are secured using **Spring Security**. Upon successful authentication, the *Identity Service* issues a cryptographically signed **JSON Web Token (JWT)**. Peripheral services utilize customized Spring Security filter chains to intercept incoming requests, extract the token from the `Authorization: Bearer` header, and validate its signature, expiration, and claims statelessly.
+* **Centralized API Gateway Routing:** External clients never communicate with the core business services directly. The **Spring Cloud API Gateway** acts as the single entry point (Reverse Proxy), ensuring that internal services like the *Core Banking Service* remain hidden within an isolated virtual network while routing authorized traffic seamlessly.
+
+<img width="908" height="261" alt="eureka" src="https://github.com/user-attachments/assets/046814f7-eb7b-4b8f-9fff-0709b4d78c06" />
+
 
 ---
 
 ## 👨‍💻 Author
 
 **Batuhan Şahin**  
-*Computer Engineering Student | Backend *  
+*Computer Engineering Student | Fulstack Developer*  
 [LinkedIn Profile](https://www.linkedin.com/in/batuhansahin1/)
