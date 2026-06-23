@@ -6,7 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.walletProject.coreBankingService.models.enums.AccountStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,7 +50,8 @@ public class Accounts {
 	private int version;
 	
 	//ACTIVE, FROZEN, CLOSED
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private AccountStatus status;
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")

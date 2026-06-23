@@ -4,22 +4,26 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.walletProject.coreBankingService.business.abstracts.AccountService;
 import com.walletProject.coreBankingService.business.requests.CreateAccountRequest;
 import com.walletProject.coreBankingService.business.requests.CreateTransactionRequest;
+import com.walletProject.coreBankingService.business.requests.UpdateBalanceRequest;
 import com.walletProject.coreBankingService.business.responses.AccountSummaryResponse;
+import com.walletProject.coreBankingService.business.responses.GetAllAccountResponse;
 import com.walletProject.coreBankingService.business.rules.AccountBusinessRules;
 import com.walletProject.coreBankingService.business.rules.CustomerBusinessRules;
 import com.walletProject.coreBankingService.business.rules.TransactionBusinessRules;
+import com.walletProject.coreBankingService.core.utilities.mappers.AccountMapper;
 import com.walletProject.coreBankingService.messaging.events.TransferCreatedEvent;
 import com.walletProject.coreBankingService.models.entities.Accounts;
 import com.walletProject.coreBankingService.models.entities.Customers;
 import com.walletProject.coreBankingService.models.entities.Transactions;
+import com.walletProject.coreBankingService.models.enums.AccountStatus;
 import com.walletProject.coreBankingService.models.enums.TransactionType;
 import com.walletProject.coreBankingService.models.enums.TransferStatus;
 import com.walletProject.coreBankingService.repository.AccountRepository;
@@ -31,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+@Service 
 @RequiredArgsConstructor
 public class AccountManager implements AccountService{
 
@@ -41,49 +45,50 @@ public class AccountManager implements AccountService{
 	private final AccountBusinessRules accountBusinessRules;
 	private final CustomerBusinessRules customerBusinessRules;
 	private final CustomerRepository customerRepository;
+	private final AccountMapper accountMapper;
 	
 	@Override
 	public void add(CreateAccountRequest createAccountRequest) {
-		// TODO Auto-generated method stub
+		   
+		   
 		
 	}
 	@Transactional
-    public void createDefaultAccountForCustomer(Customers customer) { // ID tipin neyse (Long/Integer) ona göre ayarla
+    public void createDefaultAccountForCustomer(Customers customer) { 
         
         Accounts newAccount = new Accounts();
         
-        // 1. Müşteri eşleştirmesi
+        
         newAccount.setCustomer(customer); 
         
-        // 2. Rastgele, eşsiz bir IBAN ve Hesap Numarası üretimi
+        
         String generatedIban = generateRandomIban();
         newAccount.setIbanNumber(generatedIban);
-        
-        // Hesap numarasını IBAN'ın son 16 hanesi olarak belirleyebiliriz
+   
         newAccount.setAccountNumber(generatedIban.substring(10)); 
         
-        // 3. Varsayılan (Default) Bakiye Atamaları
-        // Yeni hesabın bakiyesi her zaman 0'dır. (Double yerine BigDecimal kullanmak finansal uygulamalar için şarttır)
+        
         newAccount.setBalance(BigDecimal.TEN);
         newAccount.setAvailableBalance(BigDecimal.TEN);
         
-        // 4. Varsayılan Döviz ve Statü
+        
         newAccount.setCurrency("TRY");
         
-        // Eğer status alanını Enum yaptıysan Status.ACTIVE gibi, String ise "ACTIVE" olarak ayarla
-        newAccount.setStatus("ACTIVE"); 
+
+        newAccount.setStatus(AccountStatus.ACTIVE); 
         
-        // 5. Veritabanına kaydet
+        
         accountRepository.save(newAccount);
         
         // Loglama yaparak konsolda işlemin başarılı olduğunu görmek hayat kurtarır
         System.out.println("Otomatik hesap oluşturuldu. Müşteri ID: " + customer.getId() + " | IBAN: " + generatedIban);
     }
+	
 	@Transactional
     public void processTransfer(TransferCreatedEvent event) {
         log.info("Transfer işlemi işleniyor. Referans: {}", event.getTransferReferenceId());
 
-        // 1. Gönderenin Hesabını Bul ve Kontrol Et
+        
         this.accountBusinessRules.isIbanExists(event.getSenderIban());
         Accounts senderAccount = accountRepository.findByIbanNumber(event.getSenderIban());
 
@@ -92,7 +97,7 @@ public class AccountManager implements AccountService{
             throw new RuntimeException("Yetersiz bakiye!"); // Saga'da burası patlarsa iptal süreci başlar
         }
 
-        // 2. Alıcının Hesabını Bul
+        
         this.accountBusinessRules.isIbanExists(event.getReceiverIban());
         Accounts receiverAccount = accountRepository.findByIbanNumber(event.getReceiverIban());
        
@@ -101,42 +106,16 @@ public class AccountManager implements AccountService{
          request.setReferanceId(event.getTransferReferenceId());
          this.withdraw(senderAccount.getId(), request);
         this.deposit(receiverAccount.getId(), request);
-         //3. Parayı Aktar (Hesapla)
+         
         senderAccount.setBalance(senderAccount.getBalance().subtract(event.getAmount()));
         receiverAccount.setBalance(receiverAccount.getBalance().add(event.getAmount()));
 
        
-        // 4. Veritabanına Kaydet
-//        accountRepository.save(senderAccount);
-//        accountRepository.save(receiverAccount);
-       //withdraw
-//        Transactions transaction=new Transactions();
-//		transaction.setAccount(senderAccount);
-//		transaction.setAmount(request.getAmount());
-//		transaction.setCurrency(senderAccount.getCurrency());
-//		transaction.setCreatedAt(LocalDateTime.now());
-//		transaction.setReferanceId(request.getReferanceId());
-//		transaction.setStatus(TransferStatus.COMPLETED);
-//		transaction.setType(TransactionType.DEBIT);
-//		
-//		transactionRepository.save(transaction);
-//		
-//		 //deposit
-//		Transactions transaction1=new Transactions();
-//		transaction1.setAccount(receiverAccount);
-//		transaction1.setAmount(request.getAmount());
-//		transaction1.setCurrency(receiverAccount.getCurrency());
-//		transaction1.setCreatedAt(LocalDateTime.now());
-//		transaction1.setReferanceId(request.getReferanceId());
-//		transaction1.setStatus(TransferStatus.COMPLETED);
-//		transaction1.setType(TransactionType.CREDIT);
-//		
-//		transactionRepository.save(transaction1);
+
         log.info("Transfer başarıyla tamamlandı. Referans: {}. {} tutar {} hesabından {} hesabına aktarıldı.", 
                  event.getTransferReferenceId(), event.getAmount(), event.getSenderIban(), event.getReceiverIban());
                  
-        // NOT: İleride Saga mimarisini tamamlarken, burada işlemin başarılı olduğuna dair
-        // Transfer servisine "TransferCompletedEvent" fırlatacağız.
+
     }
 	
 	@Override
@@ -162,7 +141,7 @@ public class AccountManager implements AccountService{
 		transaction.setReferanceId(request.getReferanceId());
 		transaction.setStatus(TransferStatus.COMPLETED);
 		transaction.setType(TransactionType.DEBIT);
-		//önce account'u savelememiz lazım ve updated olması lazım bu update işlemi gibi
+	
 		accountRepository.save(account);
 		
 		transactionRepository.save(transaction);
@@ -210,21 +189,17 @@ public class AccountManager implements AccountService{
 		
 		this.accountBusinessRules.isCustomerExists(customer.getId());
 		Accounts account=this.accountRepository.findByCustomerId(customer.getId());
-		AccountSummaryResponse accountSummary=new AccountSummaryResponse();
-		accountSummary.setBalance(account.getBalance());
-		accountSummary.setUserIban(account.getIbanNumber());
-		accountSummary.setFirstName(customer.getFirstName());
-		accountSummary.setLastName(customer.getLastName());
+		AccountSummaryResponse accountSummary=this.accountMapper.accountToAccountSummary(account);
 		return accountSummary;
 	}
 	private String generateRandomIban() {
-	// Türkiye IBAN'ları her zaman 'TR' ile başlar
+	
     StringBuilder iban = new StringBuilder("TR");
     Random random = new Random();
     
-    // TR'nin yanına 24 adet rastgele rakam ekliyoruz (Toplam 26 hane olacak)
+    
     for (int i = 0; i < 24; i++) {
-        iban.append(random.nextInt(10)); // 0 ile 9 arasında rastgele rakam üretir
+        iban.append(random.nextInt(10)); 
     }
     
     return iban.toString();
@@ -233,6 +208,22 @@ public class AccountManager implements AccountService{
 	public boolean checkIbanExists(String iban) {
 		
 		return this.accountRepository.existsByIbanNumber(iban);
+	}
+	@Override
+	public List<GetAllAccountResponse> getAllAccounts() {
+		 List<Accounts>accountList=this.accountRepository.findAll();
+		 
+		List<GetAllAccountResponse> accountSummaryList=accountList.stream().map(account->this.accountMapper.accountToGetAllAccountResponse(account)).collect(Collectors.toList());
+	
+		return accountSummaryList;
+	}
+	@Override
+	public void updateAccountBalance(String accountNumber, UpdateBalanceRequest updateBalanceRequest) {
+		this.accountBusinessRules.isExistsByAccountNumber(accountNumber);
+		Accounts account=this.accountRepository.findByIbanNumber(accountNumber);
+		account.setBalance(updateBalanceRequest.getBalance());
+		account.setAvailableBalance(updateBalanceRequest.getBalance());
+		this.accountRepository.save(account);
 	}
 
 

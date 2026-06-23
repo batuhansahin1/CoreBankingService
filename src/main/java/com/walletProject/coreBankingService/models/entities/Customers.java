@@ -3,7 +3,11 @@ package com.walletProject.coreBankingService.models.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.walletProject.coreBankingService.models.enums.CustomerStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +23,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-
 public class Customers {
 
 	@Id
@@ -30,8 +33,9 @@ public class Customers {
 	private String lastName;
 	private String tcKimlikNo;
 	//türü olacak
+	
 	private String type;
-	private String kycStatus;
+	
 	private String status;
 	@OneToMany(mappedBy = "customer")
 	private List<Accounts> accounts;

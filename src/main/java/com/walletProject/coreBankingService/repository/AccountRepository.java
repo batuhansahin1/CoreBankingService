@@ -23,4 +23,6 @@ public interface AccountRepository extends JpaRepository<Accounts, Integer> {
 
 	public boolean existsByCustomerId(int customerId);
 
+	public boolean existsByAccountNumber(String accountNumber);
+
 }

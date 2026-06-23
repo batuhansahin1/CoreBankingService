@@ -27,7 +27,7 @@ public class AccountsInternalController {
 			,@RequestBody CreateTransactionRequest request){
 		
 		accountService.withdraw(accountId,request);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().build(); 
 	}
 	
 	@PostMapping("/{accountId}/deposit")

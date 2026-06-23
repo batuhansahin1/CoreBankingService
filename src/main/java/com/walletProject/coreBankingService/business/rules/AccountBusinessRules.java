@@ -49,6 +49,14 @@ public void isCustomerExists(int customerId) {
 
 }
 
+public void isExistsByAccountNumber(String accountNumber) {
+	
+	if(!this.accountRepository.existsByAccountNumber(accountNumber)) {
+		throw new RuntimeException("There is no account with that account number");
+	}
+	
+}
+
 
 
  

@@ -11,12 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllTransactionsResponse {
+public class GetCustomerResponse {
 
-	
-	private String ibanNumber;
-	private BigDecimal amount;
-	private String currency;
-	private TransactionType type;
-	private String referanceId;
-}
+	private String firstName;
+	private String lastName;
+	private String tcKimlikNo;
+} 

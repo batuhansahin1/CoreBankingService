@@ -10,6 +10,7 @@ import com.walletProject.coreBankingService.business.responses.GetAllTransaction
 import com.walletProject.coreBankingService.business.rules.AccountBusinessRules;
 import com.walletProject.coreBankingService.business.rules.CustomerBusinessRules;
 import com.walletProject.coreBankingService.business.rules.TransactionBusinessRules;
+import com.walletProject.coreBankingService.core.utilities.mappers.TransactionMapper;
 import com.walletProject.coreBankingService.models.entities.Accounts;
 import com.walletProject.coreBankingService.models.entities.Customers;
 import com.walletProject.coreBankingService.models.entities.Transactions;
@@ -29,6 +30,7 @@ public class TransactionsManager implements TransactionService {
 	private final AccountBusinessRules accountBusinessRules;
 	private final CustomerBusinessRules customerBusinessRules;
 	private final TransactionBusinessRules transactionBusinessRules;
+	private final TransactionMapper transactionMapper;
 	
 
 
@@ -43,15 +45,7 @@ public class TransactionsManager implements TransactionService {
 	    //list null olursa hiçbir şey döndürmüyor
 		List<Transactions> transactionList =transactionRepository.findAllByAccountId(account.getId());
 		List<GetAllTransactionsResponse> responseList=
-transactionList.stream().map(transaction->{
-					GetAllTransactionsResponse transactionResponse=
-							new GetAllTransactionsResponse();
-					transactionResponse.setAmount(transaction.getAmount());
-					transactionResponse.setIbanNumber(transaction.getAccount().getIbanNumber());
-					transactionResponse.setType(transaction.getType());
-					transactionResponse.setReferanceId(transaction.getReferanceId());
-					return transactionResponse;
-				}).collect(Collectors.toList());
+transactionList.stream().map(transaction->this.transactionMapper.transactionToGetAllTransactionsResponse(transaction)).collect(Collectors.toList());
 		return responseList;
 	}
 

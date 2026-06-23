@@ -1,11 +1,16 @@
 package com.walletProject.coreBankingService.messaging.eventListeners;
 
+import java.time.LocalDateTime;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import com.walletProject.coreBankingService.business.concretes.AccountManager;
+import com.walletProject.coreBankingService.business.concretes.CustomerNumberGeneratorService;
+import com.walletProject.coreBankingService.core.utilities.mappers.CustomerMapper;
 import com.walletProject.coreBankingService.messaging.events.UserRegisteredEvent;
 import com.walletProject.coreBankingService.models.entities.Customers;
+import com.walletProject.coreBankingService.models.enums.CustomerStatus;
 import com.walletProject.coreBankingService.repository.CustomerRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,24 +21,24 @@ public class UserRegistrationListener {
 
     private final CustomerRepository customerRepository;
     private final AccountManager accountManager;
-
-    // Constructor injection...
-
-    @RabbitListener(queues = "user.registered.queue") // Kuyruk adını kendi ayarlarına göre düzenle
+    private final CustomerNumberGeneratorService customerNumberGenerator;
+	private final CustomerMapper customerMapper;
+   
+ 
+    @RabbitListener(queues = "user.registered.queue") 
     public void handleUserRegisteredEvent(UserRegisteredEvent event) {
         
-        // 1. Gelen veriyle önce Müşteriyi (Customer) oluştur
-        Customers customer = new Customers();
-        customer.setTcKimlikNo(event.getTcKimlik());
-        customer.setFirstName(event.getFirstName());
-        customer.setLastName(event.getLastName());
-        customer.setType(event.getCustomerType());
-        // ... diğer alanlar
+        
+        Customers customer = this.customerMapper.createUserRegisteredEventToCustomer(event);
+        
+        
+        customer.setStatus("ACTIVE");
+        customer.setCreatedAt(LocalDateTime.now());
+        customer.setCustomerNumber(customerNumberGenerator.generateCustomerNumberFromId(event.getTcKimlik()));
         
         Customers savedCustomer = customerRepository.save(customer);
 
-        // 2. Müşteri oluştuğuna göre, onun ID'si ile yeni bir Banka Hesabı (Account) aç
-        // Bu metodu AccountManager içinde yazmış olmalısın (Varsayılan bakiye 0, yeni IBAN üretimi vb.)
+       
         accountManager.createDefaultAccountForCustomer(savedCustomer);
         
         System.out.println("Yeni müşteri ve hesabı başarıyla oluşturuldu: " + event.getTcKimlik());

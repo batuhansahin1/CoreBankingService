@@ -2,6 +2,7 @@ package com.walletProject.coreBankingService.business.requests;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateAccountRequest {
+public class UpdateBalanceRequest {
 
-	private String currency;
-	
-	private int customerId;
-	private String ibanNumber;
+	@NotBlank(message = "Bakiye")
 	private BigDecimal balance;
-	
-	
 }

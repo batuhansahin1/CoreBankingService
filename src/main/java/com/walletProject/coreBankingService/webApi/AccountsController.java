@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.walletProject.coreBankingService.business.abstracts.AccountService;
 import com.walletProject.coreBankingService.business.requests.CreateAccountRequest;
+import com.walletProject.coreBankingService.business.requests.UpdateBalanceRequest;
 import com.walletProject.coreBankingService.business.responses.AccountSummaryResponse;
+import com.walletProject.coreBankingService.business.responses.GetAllAccountResponse;
 import com.walletProject.coreBankingService.models.entities.Accounts;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +32,8 @@ public class AccountsController {
 	public void add(CreateAccountRequest createAccountRequest) {
 		
 		accountService.add(createAccountRequest);
-	}
+	} 
+	
 	
 	// Kullanıcının güncel bakiyesini çeken uç
     @GetMapping("/my-balance")
@@ -44,5 +48,12 @@ public class AccountsController {
     	
     	return this.accountService.checkIbanExists(iban);
     }
-	
+	@GetMapping("/getAllAccounts")
+	public List<GetAllAccountResponse> getAllAccounts(){
+		return accountService.getAllAccounts();
+	}
+	@PatchMapping("/update-balance/{accountNumber}")
+	public void updateAccountBalance(@PathVariable String accountNumber,UpdateBalanceRequest updateBalanceRequest) {
+		this.accountService.updateAccountBalance(accountNumber,updateBalanceRequest);
+	}
 }
