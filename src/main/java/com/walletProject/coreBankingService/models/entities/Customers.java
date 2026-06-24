@@ -8,6 +8,7 @@ import com.walletProject.coreBankingService.models.enums.CustomerStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +38,7 @@ public class Customers {
 	private String type;
 	
 	private String status;
-	@OneToMany(mappedBy = "customer")
+	@OneToMany(mappedBy = "customer",fetch=FetchType.LAZY)
 	private List<Accounts> accounts;
 	private LocalDateTime createdAt;
 	private LocalDateTime updateAt;

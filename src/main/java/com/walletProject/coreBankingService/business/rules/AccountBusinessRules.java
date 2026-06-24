@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.walletProject.coreBankingService.core.utilities.exceptions.NoSuchCustomerExistsException;
 import com.walletProject.coreBankingService.models.entities.Accounts;
 import com.walletProject.coreBankingService.repository.AccountRepository;
 
@@ -43,7 +44,7 @@ public void isIbanExists(String ibanNumber) {
 
 public void isCustomerExists(int customerId) {
 	if(!this.accountRepository.existsByCustomerId(customerId)) {
-		throw new RuntimeException("There is no account with that customer id");
+		throw new NoSuchCustomerExistsException("There is no account with that customer id");
 	}
 	
 

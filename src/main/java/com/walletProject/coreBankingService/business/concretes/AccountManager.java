@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service 
 @RequiredArgsConstructor
 public class AccountManager implements AccountService{
-
+ 
 	private final AccountRepository accountRepository;
 	private final TransactionRepository transactionRepository;
 	private final TransactionBusinessRules transactionBusinessRules;

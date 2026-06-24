@@ -10,4 +10,6 @@ public interface TransactionService {
 
 	List<GetAllTransactionsResponse> getAllTransfersByTcKimlikNo(String tcKimlikNo);
 
+	List<GetAllTransactionsResponse> getAllTransfersByAccountId(int accountId);
+
 }

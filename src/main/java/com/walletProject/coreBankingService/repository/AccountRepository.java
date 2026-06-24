@@ -1,8 +1,11 @@
 package com.walletProject.coreBankingService.repository;
 
-import java.util.UUID;
+import java.util.List;
 
+
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import com.walletProject.coreBankingService.models.entities.Accounts;
@@ -13,16 +16,19 @@ public interface AccountRepository extends JpaRepository<Accounts, Integer> {
 	
 	public boolean existsById(int id );
 	
-	public Accounts findById(int id);
+	public Accounts findById(int accountId);
 	public Accounts findByIbanNumber(String ibanNumber);
 	public boolean existsByIbanNumber(String ibanNumber);
 
 	
-
+	
 	public Accounts findByCustomerId(int customerId);
 
 	public boolean existsByCustomerId(int customerId);
-
+ 
 	public boolean existsByAccountNumber(String accountNumber);
+	
+	@EntityGraph(attributePaths= {"customer"})
+	 List<Accounts> findAll();
 
 }

@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.walletProject.coreBankingService.business.abstracts.TransactionService;
 import com.walletProject.coreBankingService.business.responses.GetAllTransactionsResponse;
-import com.walletProject.coreBankingService.models.entities.Accounts;
-import com.walletProject.coreBankingService.models.entities.Transactions;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +30,12 @@ public class TransactionsController {
 		List<GetAllTransactionsResponse> history = transactionService.getAllTransfersByTcKimlikNo(tcKimlik);
         return ResponseEntity.ok(history);
     }
-
+   @GetMapping("/getAllTransactions")
+   public ResponseEntity<List<GetAllTransactionsResponse>> getAllTransactions(@RequestParam int accountId ) {
+       // İleride emaili doğrudan JWT'den çekeceğiz ki başkası başkasının geçmişini göremesin
+      System.out.println(accountId);
+		List<GetAllTransactionsResponse> history = transactionService.getAllTransfersByAccountId(accountId);
+       return ResponseEntity.ok(history);
+   }
 
 }

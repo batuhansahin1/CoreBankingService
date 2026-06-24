@@ -49,6 +49,21 @@ transactionList.stream().map(transaction->this.transactionMapper.transactionToGe
 		return responseList;
 	}
 
+
+
+	@Override
+	public List<GetAllTransactionsResponse> getAllTransfersByAccountId(int accountId) {
+		this.accountBusinessRules.isExistsByAccountId(accountId);
+		Accounts account=this.accountRepository.findById(accountId);
+		
+		
+	    //list null olursa hiçbir şey döndürmüyor
+		List<Transactions> transactionList =transactionRepository.findAllByAccountId(accountId);
+		List<GetAllTransactionsResponse> responseList=
+transactionList.stream().map(transaction->this.transactionMapper.transactionToGetAllTransactionsResponse(transaction)).collect(Collectors.toList());
+		return responseList;
+	}
+
 	
 	
 }
