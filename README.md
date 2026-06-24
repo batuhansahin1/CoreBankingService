@@ -80,5 +80,5 @@ The ecosystem enforces a strict, stateless security perimeter to protect financi
 ## 👨‍💻 Author
 
 **Batuhan Şahin**  
-*Computer Engineering Student | Fulstack Developer*  
+*Computer Engineering Student | Fullstack Developer*  
 [LinkedIn Profile](https://www.linkedin.com/in/batuhansahin1/)
